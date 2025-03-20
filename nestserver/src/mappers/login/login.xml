@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper namespace="Login">
+    <select id="loginProc" resultType="map">
+        SELECT  loginID as loginId
+               , name as userNm
+               , user_Type as userType
+          FROM tb_userinfo 
+         WHERE loginID = #{lgn_Id}
+           AND password = #{pwd}
+    </select>
+
+    <select id="listUsrMnuAtrt" resultType="map">
+            SELECT  ta.mnu_id
+                  ,   ta.hir_mnu_id
+                  ,   ta.mnu_nm 
+                  ,   ta.mnu_url
+                  ,   ta.mnu_dvs_cod
+                  ,   ta.grp_num
+                  ,   ta.odr
+                  ,   ta.lvl
+                  ,   ta.mnu_ico_cod
+               FROM  tm_mnu_mst ta
+               WHERE EXISTS (
+                             SELECT  1
+                             FROM  tn_usr_mnu_atrt tb
+                             WHERE ta.mnu_id = tb.mnu_id
+                                  AND tb.user_type = #{userType}
+                           )
+                  AND ta.lvl=#{lvl}
+                 <if test="hir_mnu_id != null"> 
+                    AND hir_mnu_id = #{hir_mnu_id}
+                 </if>
+               ORDER BY ta.odr
+     </select>
+
+
+</mapper>
