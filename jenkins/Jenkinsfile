@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/your-repo.git'
+            }
+        }
+
+        stage('Build Frontend') {
+            steps {
+                sh 'docker build -t my-frontend -f docker/frontend.Dockerfile .'
+            }
+        }
+
+        stage('Build Backend') {
+            steps {
+                sh 'docker build -t my-backend -f docker/backend.Dockerfile .'
+            }
+        }
+
+        stage('Push Docker Images') {
+            steps {
+                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
+                    sh 'docker tag my-frontend my-dockerhub-account/my-frontend:latest'
+                    sh 'docker push my-dockerhub-account/my-frontend:latest'
+
+                    sh 'docker tag my-backend my-dockerhub-account/my-backend:latest'
+                    sh 'docker push my-dockerhub-account/my-backend:latest'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sshagent(['my-server-ssh']) {
+                    sh '''
+                    ssh user@server "docker pull my-dockerhub-account/my-frontend:latest"
+                    ssh user@server "docker pull my-dockerhub-account/my-backend:latest"
+                    ssh user@server "docker-compose down && docker-compose up -d"
+                    '''
+                }
+            }
+        }
+    }
+}
