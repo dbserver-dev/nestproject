@@ -21,7 +21,7 @@ export class NoticeService {
       searchparm.currentpage,
       searchparm.pagesize,
       req.session.loginId,
-      this.configService.get<string>('fileUpload.rootPath'),
+      this.configService.get<string>('FILEUPLOAD_ROOT_PATH'),
     );
 
     // console.log('📜 등록된 SQL 목록:', mybatisMapper.getMapper());
