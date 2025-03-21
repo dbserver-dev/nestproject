@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper namespace="Common">	
+   <select id="listdetailcode" resultType = "map">
+		select   group_code
+               , detail_code
+               , detail_name
+               , note
+               , ifnull(use_yn,'N') as use_yn
+               , regId
+               , reg_date
+               , updateId
+               , update_date
+         from tb_detail_code
+        where  group_code = #{groupcode}
+		 ORDER BY detail_code
+	</select>
+</mapper>

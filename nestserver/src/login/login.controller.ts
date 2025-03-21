@@ -1,4 +1,5 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { LoginService } from './login.service';
 
 @Controller()
@@ -6,7 +7,10 @@ export class LoginController {
   constructor(private readonly loginService: LoginService) {}
 
   @Post('loginproc.do')
-  loginproc(@Body() logininfo: { lgn_Id: string; pwd: string }): Promise<{
+  loginproc(
+    @Body() logininfo: { lgn_Id: string; pwd: string },
+    @Req() req: Request,
+  ): Promise<{
     result: string;
     resultMsg: string;
     serverName: string;
@@ -16,6 +20,7 @@ export class LoginController {
     usrMnuAtrt?: any;
   }> {
     console.log(logininfo.lgn_Id, ' ', logininfo.pwd);
-    return this.loginService.loginproc(logininfo);
+    console.log('📦 세션 확인:', req.session); // null? undefined? 객체?
+    return this.loginService.loginproc(logininfo, req);
   }
 }

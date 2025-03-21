@@ -22,7 +22,8 @@
   "include": [
     "src/**/*.ts",
     "src/**/dto/*.ts",
-    "src/mappers/**/*.xml" // ✅ XML 포함
+    "src/mappers/**/*.xml", // ✅ XML 포함
+    "src/types"
   ],
   "exclude": ["node_modules", "dist"]
 }

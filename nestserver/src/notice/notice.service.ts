@@ -1,13 +1,18 @@
 import { Injectable, Inject } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Request } from 'express';
 import * as mybatisMapper from 'mybatis-mapper';
 import * as mysql from 'mysql2/promise';
 import { noticesearch, noticelist } from './dto/notice.dto';
 
 @Injectable()
 export class NoticeService {
-  constructor(@Inject('MYSQL_CONNECTION') private readonly pool: mysql.Pool) {}
+  constructor(
+    @Inject('MYSQL_CONNECTION') private readonly pool: mysql.Pool,
+    private configService: ConfigService,
+  ) {}
 
-  async noticeListvue(searchparm: noticesearch) {
+  async noticeListvue(searchparm: noticesearch, req: Request) {
     console.log(
       '공지사항 검색 Parameter : ',
       searchparm.stitle,
@@ -15,6 +20,8 @@ export class NoticeService {
       searchparm.sedate,
       searchparm.currentpage,
       searchparm.pagesize,
+      req.session.loginId,
+      this.configService.get<string>('fileUpload.rootPath'),
     );
 
     // console.log('📜 등록된 SQL 목록:', mybatisMapper.getMapper());

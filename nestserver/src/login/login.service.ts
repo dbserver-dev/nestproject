@@ -1,4 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
+import { Request } from 'express';
 import * as mybatisMapper from 'mybatis-mapper';
 import * as mysql from 'mysql2/promise';
 import { LoginResponse, menuResponse } from './dto/login-response.dto';
@@ -7,7 +8,10 @@ import { LoginResponse, menuResponse } from './dto/login-response.dto';
 export class LoginService {
   constructor(@Inject('MYSQL_CONNECTION') private readonly pool: mysql.Pool) {}
 
-  async loginproc(logininfo: { lgn_Id: string; pwd: string }): Promise<LoginResponse> {
+  async loginproc(
+    logininfo: { lgn_Id: string; pwd: string },
+    req: Request,
+  ): Promise<LoginResponse> {
     try {
       console.log('로그인 요청:', logininfo.lgn_Id, logininfo.pwd);
 
@@ -72,6 +76,10 @@ export class LoginService {
             mainmenuelement.nodeList = submenurows as menuResponse[];
           }
         }
+
+        req.session.userNm = user.userNm;
+        req.session.loginId = user.loginId;
+        req.session.userType = user.userType;
 
         // console.log('mainmenurows : ', mainmenurows);
 
