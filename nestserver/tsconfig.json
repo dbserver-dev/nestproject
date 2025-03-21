@@ -16,6 +16,13 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
-  }
+    "noFallthroughCasesInSwitch": false,
+    "resolveJsonModule": true // ✅ JSON, XML 같은 비코드 파일 지원 (필수)
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/dto/*.ts",
+    "src/mappers/**/*.xml" // ✅ XML 포함
+  ],
+  "exclude": ["node_modules", "dist"]
 }

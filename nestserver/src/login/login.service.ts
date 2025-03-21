@@ -5,10 +5,7 @@ import { LoginResponse, menuResponse } from './dto/login-response.dto';
 
 @Injectable()
 export class LoginService {
-  constructor(@Inject('MYSQL_CONNECTION') private readonly pool: mysql.Pool) {
-    // ✅ MyBatis XML 파일 로드 (경로 확인 필요)
-    mybatisMapper.createMapper(['src/mappers/login/login.xml']);
-  }
+  constructor(@Inject('MYSQL_CONNECTION') private readonly pool: mysql.Pool) {}
 
   async loginproc(logininfo: { lgn_Id: string; pwd: string }): Promise<LoginResponse> {
     try {
@@ -20,12 +17,12 @@ export class LoginService {
         indent: '  ',
       });
 
-      console.log('실행할 SQL:', sql);
+      //console.log('실행할 SQL:', sql);
 
       // ✅ MySQL 연결 후 쿼리 실행
       const [rows] = await this.pool.execute<mysql.RowDataPacket[]>(sql);
 
-      console.log('🔹 Login SELECT 결과(JSON):', JSON.stringify(rows, null, 2));
+      //console.log('🔹 Login SELECT 결과(JSON):', JSON.stringify(rows, null, 2));
 
       if (Array.isArray(rows) && rows.length > 0) {
         const user = rows[0] as {
@@ -45,12 +42,12 @@ export class LoginService {
           indent: '  ',
         });
 
-        console.log('실행할 sqlmainmenu SQL:', sqlmainmenu);
+        //console.log('실행할 sqlmainmenu SQL:', sqlmainmenu);
 
         // ✅ MySQL 연결 후 쿼리 실행
         const [mainmenurows] = await this.pool.execute<mysql.RowDataPacket[]>(sqlmainmenu);
 
-        console.log('🔹 메인 메뉴 SELECT 결과(JSON):', JSON.stringify(mainmenurows, null, 2));
+        //console.log('🔹 메인 메뉴 SELECT 결과(JSON):', JSON.stringify(mainmenurows, null, 2));
 
         if (Array.isArray(mainmenurows) && mainmenurows.length > 0) {
           for (const mainmenuelement of mainmenurows as menuResponse[]) {
@@ -65,12 +62,12 @@ export class LoginService {
               indent: '  ',
             });
 
-            console.log('실행할 sqlsubmenu SQL:', sqlsubmenu);
+            //console.log('실행할 sqlsubmenu SQL:', sqlsubmenu);
 
             // ✅ MySQL 연결 후 쿼리 실행
             const [submenurows] = await this.pool.execute<mysql.RowDataPacket[]>(sqlsubmenu);
 
-            console.log('🔹 서브 메뉴 SELECT 결과(JSON):', JSON.stringify(submenurows, null, 2));
+            //console.log('🔹 서브 메뉴 SELECT 결과(JSON):', JSON.stringify(submenurows, null, 2));
 
             mainmenuelement.nodeList = submenurows as menuResponse[];
           }

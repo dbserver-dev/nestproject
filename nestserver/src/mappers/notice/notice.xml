@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper namespace="Notice">	
+	<select id="noticeList" resultType="map">
+		SELECT
+				n.ntc_no as noticeNo
+			,	n.ntc_title as noticeTitle
+			,	DATE_FORMAT(n.ntc_regdate, '%Y-%m-%d') as noticeRegdate
+			,	u.loginID as loginId
+			,   u.name as loginName
+		FROM tb_notice n
+			LEFT JOIN	tb_userinfo u
+			ON			n.loginID = u.loginID
+		<where>
+		    <if test="stitle != null && stitle != ''">
+			    and n.ntc_title  Like CONCAT('%', #{stitle}, '%')
+			</if>
+			<if test="ssdate != null && ssdate != ''">
+			    and n.ntc_regdate  <![CDATA[>=]]> STR_TO_DATE(#{ssdate}, '%Y-%m-%d')   
+			</if>		
+			<if test="sedate != null && sedate != ''">	
+			    and n.ntc_regdate  <![CDATA[<=]]> STR_TO_DATE(#{sedate}, '%Y-%m-%d')   
+			</if>		
+		</where>
+		 ORDER BY n.ntc_no DESC
+		 LIMIT ${pageIndex}, ${pagesize}
+	</select>	
+		
+	<select id="noticeCnt" resultType="int">
+		/*kr.happyjob.study.repository.notice.NoticeMapper.noticeCnt*/
+		SELECT COUNT(*) as cnt
+		FROM tb_notice n
+			LEFT JOIN tb_userinfo u ON n.loginID = u.loginID
+		<where>
+		    <if test="stitle != null && stitle != ''">
+			    and n.ntc_title  Like CONCAT('%', #{stitle}, '%')
+			</if>
+			<if test="ssdate != null && ssdate != ''">
+			    and n.ntc_regdate  <![CDATA[>=]]> STR_TO_DATE(#{ssdate}, '%Y-%m-%d')   
+			</if>		
+			<if test="sedate != null && sedate != ''">	
+			    and n.ntc_regdate  <![CDATA[<=]]> STR_TO_DATE(#{sedate}, '%Y-%m-%d')   
+			</if>		
+		</where>
+	</select>
+	
+	<select id="noticeDetail" resultType="map">
+		SELECT
+					u.loginID as loginId
+				,	n.ntc_title as noticeTitle
+				,	n.ntc_content as noticeContent
+				,   n.ntc_no as noticeNo
+				,   u.name as loginName
+				,   n.file_name
+                ,   n.logical_path
+                ,   n.phygical_path
+                ,   n.file_size
+                ,   n.file_ext
+		FROM	tb_notice n
+			LEFT JOIN	tb_userinfo u
+			ON			n.loginID = u.loginID
+		WHERE n.ntc_no = #{noticeNo}
+	</select>
+	
+	<insert id="insertNotice">
+		/*kr.happyjob.study.repository.notice.NoticeMapper.insertNotice*/
+	    <selectKey resultType="string" keyProperty="noticeNo" order="BEFORE">
+            SELECT IFNULL(MAX(ntc_no),0) + 1 FROM tb_notice 
+        </selectKey> 
+		INSERT
+		INTO		tb_notice
+				(
+					ntc_no
+				  , loginID
+				  , ntc_title
+				  , ntc_content
+				  , ntc_regdate
+				  <if test="fileyn eq 'Y'.toString()">
+				  , file_name
+                  , logical_path
+                  , phygical_path
+                  , file_size
+                  , file_ext
+                  </if>
+				)
+		VALUES
+				(
+						#{noticeNo}
+					,	#{loginId}
+					,	#{noticeTitle}
+					,	#{noticeContent}
+					,	NOW()
+					<if test="fileyn === 'Y'">
+				    , #{fileinfo.file_nm}
+                    , #{fileinfo.vrfile_loc}
+                    , #{fileinfo.file_loc}
+                    , #{fileinfo.file_size}
+                    , #{fileinfo.fileExtension}
+                    </if>
+				)
+	</insert>
+	
+	<update id="updateNotice">
+		/*kr.happyjob.study.repository.notice.NoticeMapper.updateNotice*/
+		UPDATE tb_notice
+		SET		ntc_title = #{noticeTitle}
+				,	ntc_content = #{noticeContent}
+				,	ntc_regdate = NOW()
+			<if test="fileyn === 'Y'">
+				, file_name = #{fileinfo.file_nm}
+                , logical_path = #{fileinfo.vrfile_loc}
+                , phygical_path = #{fileinfo.file_loc}
+                , file_size = #{fileinfo.file_size}
+                , file_ext = #{fileinfo.fileExtension}
+            </if>
+		WHERE	ntc_no = #{noticeNo}
+	</update>
+	
+	<delete id="deleteNotice">
+		/*kr.happyjob.study.repository.notice.NoticeMapper.deleteNotice*/
+		DELETE
+		FROM 	tb_notice
+		WHERE 	ntc_no = #{noticeNo}
+	</delete>
+</mapper>

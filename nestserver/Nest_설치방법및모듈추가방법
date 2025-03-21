@@ -1,0 +1,26 @@
+1. workspace Directory 생성 후 CMD 창에서 workspace Directory  들어가서 아래 명령 문으로 nest.js 설치 
+    npm install -g @nestjs/cli
+2. Nest.js Project 생성(CMD 창 에서 실행)
+    nest new (Project 이름)
+   예) nest new my-nest-app   // my-nest-app Project 생성
+3. 생성 후 VSC 로 폴더 열기로 영 후 Terminal 에서 실행
+   3.1 Mysql Connect Module 설치
+       npm install mysql2
+  3.2 Mybatis 엔진 설치
+      npm install --save mybatis-mapper
+  3.3 Express.js 설치
+       npm install express
+  3.4 문법 체크 Module 설치 
+       npm install -D prettier
+       npm install -D eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-config-prettier eslint-plugin-prettier
+4. 업무 Module 생성
+   예. Login 업무 Directory 생성
+       nest g module  login     // Module 생성
+       nest g controller  login  // Controller 생성
+       nest g service  login     // Service 생성
+5. Nest.js 실행 권한 해제를 위한 실행
+   Windows PowerShell에서 스크립트 실행 정책(Execution Policy) 때문에 발생하는 오류 
+   nest.ps1 같은 스크립트 파일이 기본 정책상 실행이 차단되어 있어서 생기는 문제
+   Set-ExecutionPolicy RemoteSigned -Scope CurrentUser   // VSC Terminal에서 실행
+6. Nest.js Project 실핼
+   npm run start    // VSC Terminal에서 실행
