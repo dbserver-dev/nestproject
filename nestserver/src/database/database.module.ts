@@ -56,7 +56,7 @@ console.log('✅ MyBatis Mapper Loaded Successfully!');
       provide: 'MYSQL_CONNECTION',
       useFactory: async () => {
         const pool = mysql.createPool({
-          host: '13.209.16.121', // ✅ MySQL 서버 주소
+          host: '1.1.1.1', // ✅ MySQL 서버 주소
           user: 'root', // ✅ MySQL 사용자명
           password: 'hwangkh704!', // ✅ MySQL 비밀번호
           database: 'vuedb', // ✅ 사용할 데이터베이스
