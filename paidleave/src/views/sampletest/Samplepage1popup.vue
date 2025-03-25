@@ -181,7 +181,7 @@ export default {
           console.log(JSON.stringify(response));
 
           if (this.paction === "D") {
-            if (response.data.result === "SUCCESS") {
+            if (response.data.result === "SUCCESS" || response.data.resultmsg === "SUCCESS") {
               alert("삭제 되었습니다.");
               this.saveyn = "Y";
               this.closeopopup();

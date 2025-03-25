@@ -6,7 +6,6 @@ import { LoginModule } from './login/login.module';
 import { DatabaseModule } from './database/database.module';
 import { NoticeModule } from './notice/notice.module';
 import { CommonModule } from './common/common.module';
-
 @Module({
   imports: [
     ConfigModule.forRoot({

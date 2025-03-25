@@ -236,6 +236,12 @@ export default {
       let dataWithFile = new FormData(document.getElementById("regform"));
       dataWithFile.append("action", this.paction);
 
+
+      for (const [key, value] of dataWithFile.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+
       let callurl = "";
 
       if (this.paction === "I") {
@@ -247,7 +253,7 @@ export default {
       }
 
       this.axios
-        .post(callurl, dataWithFile)
+        .post(callurl, dataWithFile) 
         .then((response) => {
           console.log(JSON.stringify(response));
 

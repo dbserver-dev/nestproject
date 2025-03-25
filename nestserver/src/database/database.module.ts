@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as mysql from 'mysql2/promise';
 import * as mybatisMapper from 'mybatis-mapper';
 import * as path from 'path';
 import * as fs from 'fs';
+import { databaseparam } from './dto/database.dto';
 
 // ✅ 실행 모드에 따라 XML 폴더 위치를 다르게 설정
 const isDev = process.env.NODE_ENV !== 'production';
@@ -51,15 +53,17 @@ console.log('📜 등록된 SQL 목록:', mybatisMapper.getMapper());
 console.log('✅ MyBatis Mapper Loaded Successfully!');
 
 @Module({
+  imports: [ConfigModule], // ✅ ConfigModule import
   providers: [
     {
       provide: 'MYSQL_CONNECTION',
-      useFactory: async () => {
+      inject: [ConfigService], // ✅ 의존성 주입 선언
+      useFactory: async (configService: ConfigService<databaseparam>) => {
         const pool = mysql.createPool({
-          host: '13.209.16.121', // ✅ MySQL 서버 주소
-          user: 'root', // ✅ MySQL 사용자명
-          password: 'hwangkh704!', // ✅ MySQL 비밀번호
-          database: 'vuedb', // ✅ 사용할 데이터베이스
+          host: configService.get<string>('DB_HOST'), // ✅ MySQL 서버 주소
+          user: configService.get<string>('DB_USER'),
+          password: configService.get<string>('DB_PASS'),
+          database: configService.get<string>('DB_NAME'),
           waitForConnections: true,
           connectionLimit: 50,
           queueLimit: 0,

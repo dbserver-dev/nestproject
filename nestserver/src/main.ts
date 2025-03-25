@@ -32,6 +32,12 @@ async function bootstrap() {
     }),
   );
 
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true, // Transform is recomended configuration for avoind issues with arrays of files transformations
+    }),
+  );
+
   /*
   cookie  관련 Option
   maxAge	쿠키 유효 시간 (ms)

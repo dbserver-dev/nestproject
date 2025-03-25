@@ -3,7 +3,13 @@ import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 import * as mybatisMapper from 'mybatis-mapper';
 import * as mysql from 'mysql2/promise';
-import { noticesearch, noticelist } from './dto/notice.dto';
+import {
+  noticesearch,
+  noticelist,
+  noticedetaail,
+  noticeinput,
+  noticeinputfile,
+} from './dto/notice.dto';
 
 @Injectable()
 export class NoticeService {
@@ -22,6 +28,7 @@ export class NoticeService {
       searchparm.pagesize,
       req.session.loginId,
       this.configService.get<string>('FILEUPLOAD_ROOT_PATH'),
+      this.configService.get<string>('DB_HOST'),
     );
 
     // console.log('📜 등록된 SQL 목록:', mybatisMapper.getMapper());
@@ -70,5 +77,180 @@ export class NoticeService {
       pageSize: searchparm.pagesize,
       currentPage: searchparm.currentpage,
     };
+  }
+
+  async noticeDetail(searchparm: noticedetaail) {
+    console.log('상세 조회 Parameter : ', searchparm.noticeNo);
+
+    const execsql = mybatisMapper.getStatement('Notice', 'noticeDetail', searchparm, {
+      language: 'sql',
+      indent: '  ',
+    });
+
+    console.log('실행할 SQL:', execsql);
+
+    const [selectdata] = await this.pool.execute<(noticelist & mysql.RowDataPacket)[]>(execsql);
+
+    console.log('🔹 Notice CNT SELECT 결과(JSON):', JSON.stringify(selectdata, null, 2));
+
+    return {
+      noticeDetail: selectdata[0],
+    };
+  }
+
+  async insertNotice(inputparm: noticeinput) {
+    inputparm = { ...inputparm, fileyn: 'N' };
+
+    console.log('등록 Parameter : ', JSON.stringify(inputparm, null, 2));
+
+    const execsql = mybatisMapper.getStatement('Notice', 'insertNotice', inputparm, {
+      language: 'sql',
+      indent: '  ',
+    });
+
+    console.log('실행할 SQL:', execsql);
+
+    const [result] = await this.pool.execute<mysql.OkPacket>(execsql);
+
+    console.log('🔹 Notice insert 결과(JSON):', result.affectedRows);
+
+    if (result.affectedRows > 0) {
+      console.log('✅ INSERT 성공!');
+      return {
+        result: 1,
+        resultmsg: '등록 되었습니다.',
+      };
+    } else {
+      console.warn('❌ INSERT 실패 또는 영향받은 행 없음!');
+      return {
+        result: -1,
+        resultmsg: '등록 중 오류가 발생 하였습니다. : ' + result.message,
+      };
+    }
+  }
+
+  async insertNoticefile(inputparm: noticeinputfile) {
+    console.log('등록 Parameter : ', JSON.stringify(inputparm, null, 2));
+
+    const execsql = mybatisMapper.getStatement('Notice', 'insertNotice', inputparm, {
+      language: 'sql',
+      indent: '  ',
+    });
+
+    console.log('실행할 SQL:', execsql);
+
+    const [result] = await this.pool.execute<mysql.OkPacket>(execsql);
+
+    console.log('🔹 Notice insert 결과(JSON):', result.affectedRows);
+
+    if (result.affectedRows > 0) {
+      console.log('✅ INSERT 성공!');
+      return {
+        result: 1,
+        resultmsg: '등록 되었습니다.',
+      };
+    } else {
+      console.warn('❌ INSERT 실패 또는 영향받은 행 없음!');
+      return {
+        result: -1,
+        resultmsg: '등록 중 오류가 발생 하였습니다. : ' + result.message,
+      };
+    }
+  }
+
+  async noticeUpdate(inputparm: noticeinput) {
+    inputparm = { ...inputparm, fileyn: 'N' };
+
+    console.log('수정 Parameter : ', JSON.stringify(inputparm, null, 2));
+
+    const execsql = mybatisMapper.getStatement('Notice', 'updateNotice', inputparm, {
+      language: 'sql',
+      indent: '  ',
+    });
+
+    console.log('실행할 SQL:', execsql);
+
+    const [result] = await this.pool.execute<mysql.OkPacket>(execsql);
+
+    console.log('🔹 Notice Update 결과(JSON):', result.affectedRows);
+
+    if (result.affectedRows > 0) {
+      console.log('✅ Update 성공!');
+      return {
+        result: 1,
+        resultmsg: '수정 되었습니다.',
+      };
+    } else {
+      console.warn('❌ Update 실패 또는 영향받은 행 없음!');
+      return {
+        result: -1,
+        resultmsg: '수정 중 오류가 발생 하였습니다. : ' + result.message,
+      };
+    }
+  }
+
+  async noticeUpdatefile(inputparm: noticeinputfile) {
+    console.log('수정 Parameter : ', JSON.stringify(inputparm, null, 2));
+
+    const execsql = mybatisMapper.getStatement('Notice', 'updateNotice', inputparm, {
+      language: 'sql',
+      indent: '  ',
+    });
+
+    console.log('실행할 SQL:', execsql);
+
+    const [result] = await this.pool.execute<mysql.OkPacket>(execsql);
+
+    console.log('🔹 Notice Update 결과(JSON):', result.affectedRows);
+
+    if (result.affectedRows > 0) {
+      console.log('✅ Update 성공!');
+      return {
+        result: 1,
+        resultmsg: '수정 되었습니다.',
+      };
+    } else {
+      console.warn('❌ Update 실패 또는 영향받은 행 없음!');
+      return {
+        result: -1,
+        resultmsg: '수정 중 오류가 발생 하였습니다. : ' + result.message,
+      };
+    }
+  }
+
+  // Samplepage1popup.vue 수정 요
+  /* if (response.data.result === "SUCCESS" || response.data.resultmsg === "SUCCESS") {
+       alert("삭제 되었습니다.");
+       this.saveyn = "Y";
+       this.closeopopup();
+  }
+  */
+  async noticeDelete(inputparm: noticeinput) {
+    console.log('삭제 Parameter : ', JSON.stringify(inputparm, null, 2));
+
+    const execsql = mybatisMapper.getStatement('Notice', 'deleteNotice', inputparm, {
+      language: 'sql',
+      indent: '  ',
+    });
+
+    console.log('실행할 SQL:', execsql);
+
+    const [result] = await this.pool.execute<mysql.OkPacket>(execsql);
+
+    console.log('🔹 Notice Delete 결과(JSON):', result.affectedRows);
+
+    if (result.affectedRows && result.affectedRows > 0) {
+      console.log('✅ Delete 성공!');
+      return {
+        result: 1,
+        resultmsg: 'SUCCESS',
+      };
+    } else {
+      console.warn('❌ 삭제 실패 또는 영향받은 행 없음!');
+      return {
+        result: -1,
+        resultmsg: '삭제 중 오류가 발생 하였습니다. : ' + result.message,
+      };
+    }
   }
 }
