@@ -42,3 +42,8 @@
    "reflect-metadata": "^0.2.2",            Reflect Module          @Controller, @Service 데코레이션 사용
    "rxjs": "^7.8.1",                        Rxjs Module             비동기 처리 Module
    "uuid": "^11.1.0"                        UUID Module             UUID 생성 Module
+
+   8. git
+      git add .               // 모든 파일 추가
+      git commit -m "Update"  // Commit
+      git push origin master  // Push
