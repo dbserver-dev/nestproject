@@ -249,11 +249,12 @@ export default {
       } else if (this.paction === "U") {
         callurl = "/system/noticeUpdatefile";
       } else if (this.paction === "D") {
-        callurl = "/system/noticeDelete";
+        // callurl = "/system/noticeDelete";
+        callurl = "/system/noticeDeletefile";  
       }
 
       this.axios
-        .post(callurl, dataWithFile) 
+        .post(callurl, dataWithFile)   
         .then((response) => {
           console.log(JSON.stringify(response));
 

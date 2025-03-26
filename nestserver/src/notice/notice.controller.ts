@@ -9,6 +9,7 @@ import * as path from 'path';
 import * as mime from 'mime-types';
 import { v4 as uuidv4 } from 'uuid';
 import {
+  noticeinput,
   noticereturn,
   noticesearchclass,
   noticedetaailclass,
@@ -219,6 +220,49 @@ export class NoticeController {
     }
 
     return this.noticeService.noticeUpdatefile(noticeinput);
+  }
+
+  @Post('noticeDeletefile')
+  @FormDataRequest()
+  async noticeDeletefile(
+    @Req() req: Request & { body: noticeinputfileclass },
+  ): Promise<savereturn> {
+    // Vue Url 변경
+    // callurl = "/system/noticeDelete";  ==> callurl = "/system/noticeDeletefile";
+
+    const noticeinput = req.body as noticeinputfileclass;
+
+    const convertInput: noticeinput = {
+      noticeNo: noticeinput.noticeNo ?? 0,
+      loginId: noticeinput.loginId ?? '',
+      noticeTitle: noticeinput.noticeTitle,
+      noticeContent: noticeinput.noticeContent,
+      action: noticeinput.action,
+    };
+
+    const detailinfo = await this.noticeService.noticeDetail(convertInput);
+
+    const file_size = detailinfo.noticeDetail.file_size;
+
+    if (file_size > 0) {
+      const normalizedPath = path.normalize(detailinfo.noticeDetail.phygical_path);
+
+      try {
+        if (fs.existsSync(normalizedPath)) {
+          fs.unlinkSync(normalizedPath);
+          console.log('🗑️ 파일 삭제 완료:', normalizedPath);
+        } else {
+          console.warn('⚠️ 삭제할 파일이 존재하지 않습니다:', normalizedPath);
+        }
+      } catch (err) {
+        console.error('❌ 파일 삭제 중 오류 발생:', err);
+      }
+    }
+
+    let returnjson = await this.noticeService.noticeDelete(convertInput);
+    returnjson = { ...returnjson, resultmsg: '식제 되었습니다.' };
+
+    return returnjson;
   }
 
   @Post('noticefileDetail')

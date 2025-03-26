@@ -3,6 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 import * as mybatisMapper from 'mybatis-mapper';
 import * as mysql from 'mysql2/promise';
+import * as fs from 'fs';
+import * as path from 'path';
 import {
   noticesearch,
   noticelist,
