@@ -14,7 +14,7 @@
        npm install -D prettier
        npm install -D eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-config-prettier eslint-plugin-prettier
 4. 업무 Module 생성
-   예. Login 업무 Directory 생성
+   예. Login 업무 Module 생성
        nest g module  login     // Module 생성
        nest g controller  login  // Controller 생성
        nest g service  login     // Service 생성
@@ -22,5 +22,23 @@
    Windows PowerShell에서 스크립트 실행 정책(Execution Policy) 때문에 발생하는 오류 
    nest.ps1 같은 스크립트 파일이 기본 정책상 실행이 차단되어 있어서 생기는 문제
    Set-ExecutionPolicy RemoteSigned -Scope CurrentUser   // VSC Terminal에서 실행
-6. Nest.js Project 실핼
-   npm run start    // VSC Terminal에서 실행
+6. Nest.js Project 실행
+   npm run start:dev    // VSC Terminal에서 실행
+
+7. 설치 Module
+   "@nestjs/common": "^11.0.1",             Nest 기본 Module
+   "@nestjs/config": "^4.0.1",              환경설정 Module
+   "@nestjs/core": "^11.0.1",               Nest Core Module
+   "@nestjs/platform-express": "^11.0.12",  Nest Express Module
+   "class-transformer": "^0.5.1",           Class 변환 Module
+   "class-validator": "^0.14.1",            Class 유효성 검사 Module 
+   "express": "^5.0.1",                     Express Module
+   "express-session": "^1.18.1",            Express Session Module  세션 관리
+   "form-data": "^4.0.2",                   Form Data Module        Formdata로 넘어온 데이터 처리
+   "multer": "^1.4.5-lts.2",                Multer Module           Formdata로 넘어온 파일 처리
+   "mybatis-mapper": "^0.8.0",              Mybatis Module          Mybatis Mapper Module
+   "mysql2": "^3.12.0",                     Mysql Module            Mysql Connection Module
+   "nestjs-form-data": "^1.9.93",           Nest Form Data Module   File Upload Config(사이즈, 종류) 설정 과 Upload 파일 제어 
+   "reflect-metadata": "^0.2.2",            Reflect Module          @Controller, @Service 데코레이션 사용
+   "rxjs": "^7.8.1",                        Rxjs Module             비동기 처리 Module
+   "uuid": "^11.1.0"                        UUID Module             UUID 생성 Module
