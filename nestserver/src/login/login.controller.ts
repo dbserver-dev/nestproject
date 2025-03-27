@@ -1,7 +1,6 @@
 import { Controller, Post, Body, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { LoginService } from './login.service';
-
 @Controller()
 export class LoginController {
   constructor(private readonly loginService: LoginService) {}

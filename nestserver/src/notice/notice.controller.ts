@@ -314,4 +314,38 @@ export class NoticeController {
     const fileStream = fs.createReadStream(filepath);
     fileStream.pipe(res);
   }
+
+  @Post('noticeexcelDown.do')
+  async noticeexcelDown(
+    @Body() searchparam: noticesearchclass,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    // searchparam = { ...searchparam, currentpage: 1, pagesize: 9999999 };
+    // Front(Vue) 에서 Parameter 추가
+    // params.append("currentpage", 1);
+    // params.append("pagesize", 9999999);
+
+    const result = await this.noticeService.noticeListvue(searchparam, req);
+
+    const file = await this.noticeService.generateNoticeExcel(result);
+    res.download(file);
+
+    //fs.unlinkSync(file);
+  }
+
+  @Post('noticepdfDown.do')
+  async noticepdfDown(
+    @Body() searchparam: noticesearchclass,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    // searchparam = { ...searchparam, currentpage: 1, pagesize: 1000000 };
+    const result = await this.noticeService.noticeListvue(searchparam, req);
+
+    const file = await this.noticeService.generateNoticePdf(result);
+    res.download(file);
+
+    //fs.unlinkSync(file);
+  }
 }

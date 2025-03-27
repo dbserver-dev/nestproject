@@ -1,6 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
+import * as ExcelJS from 'exceljs';
+import * as pdf from 'html-pdf';
 import * as mybatisMapper from 'mybatis-mapper';
 import * as mysql from 'mysql2/promise';
 import * as fs from 'fs';
@@ -11,6 +13,7 @@ import {
   noticedetaail,
   noticeinput,
   noticeinputfile,
+  noticereturn,
 } from './dto/notice.dto';
 
 @Injectable()
@@ -254,5 +257,103 @@ export class NoticeService {
         resultmsg: '삭제 중 오류가 발생 하였습니다. : ' + result.message,
       };
     }
+  }
+
+  async generateNoticeExcel(data: noticereturn) {
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet('공지사항');
+
+    sheet.columns = [
+      { header: '글번호', key: 'noticeNo', width: 10 },
+      { header: '제목', key: 'noticeTitle', width: 30 },
+      { header: '등록일자', key: 'noticeRegdate', width: 20 },
+    ];
+
+    data.listdate.forEach((row) => {
+      sheet.addRow(row);
+    });
+
+    // ✅ 테두리 추가
+    sheet.eachRow((row) => {
+      row.eachCell((cell, colNumber) => {
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' },
+        };
+
+        if (colNumber === 2) {
+          cell.alignment = { horizontal: 'left' }; // 2번 컬럼 → 왼쪽 정렬
+        } else {
+          cell.alignment = { horizontal: 'center' }; // 가운데 정렬
+        }
+      });
+    });
+
+    // file 저장 결로 읽어 오기
+    const rootpath = this.configService.get<string>('FILEUPLOAD_ROOT_PATH');
+    const temppath = this.configService.get<string>('FILEUPLOAD_TEMP');
+    const filename = `notice-${Date.now()}.xlsx`;
+    const phygicalpath = path.join(
+      typeof rootpath === 'string' ? rootpath : 'Z:\\FileRepository',
+      path.sep,
+      typeof temppath === 'string' ? temppath : 'notice',
+      path.sep,
+    );
+
+    const targetDir = path.resolve(path.normalize(phygicalpath));
+    const filefullpath = path.join(targetDir, filename);
+
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir, { recursive: true });
+    }
+
+    //const filePath = path.join(__dirname, `notice-${Date.now()}.xlsx`);
+    await workbook.xlsx.writeFile(filefullpath);
+    return filefullpath;
+  }
+
+  async generateNoticePdf(data: noticereturn) {
+    // file 저장 결로 읽어 오기
+    const rootpath = this.configService.get<string>('FILEUPLOAD_ROOT_PATH');
+    const temppath = this.configService.get<string>('FILEUPLOAD_TEMP');
+    const filename = `notice-${Date.now()}.pdf`;
+    const phygicalpath = path.join(
+      typeof rootpath === 'string' ? rootpath : 'Z:\\FileRepository',
+      path.sep,
+      typeof temppath === 'string' ? temppath : 'notice',
+      path.sep,
+    );
+
+    const targetDir = path.resolve(path.normalize(phygicalpath));
+    const filefullpath = path.join(targetDir, filename);
+
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir, { recursive: true });
+    }
+
+    const templatePath = path.join(targetDir, 'pdf-templete.html');
+    let html = fs.readFileSync(templatePath, 'utf8');
+
+    // 데이터로 <tr> 생성
+    const tableRows = data.listdate
+      .map(
+        (row) =>
+          `<tr><td>${row.noticeNo}</td><td>${row.noticeTitle}</td><td>${row.noticeRegdate}</td></tr>`,
+      )
+      .join('');
+
+    html = html.replace('{{rows}}', tableRows);
+
+    //const filePath = path.join(__dirname, `notice-${Date.now()}.pdf`);
+    await new Promise((resolve, reject) => {
+      pdf.create(html).toFile(filefullpath, (err, res) => {
+        if (err) return reject(err);
+        resolve(res);
+      });
+    });
+
+    return filefullpath;
   }
 }

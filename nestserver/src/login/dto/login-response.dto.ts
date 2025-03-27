@@ -20,3 +20,8 @@ export interface menuResponse {
   mnu_ico_cod: string;
   nodeList: menuResponse[];
 }
+
+export interface LoginRequest {
+  lgn_Id: string;
+  pwd: string;
+}
