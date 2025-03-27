@@ -314,6 +314,8 @@ export default {
       params.append("ssdate", this.ssdate);
       params.append("sedate", this.sedate);
       params.append("stitle", this.stitle);
+      params.append("currentpage", 1);
+      params.append("pagesize", 9999999);
 
       this.axios({
         url: "/system/noticeexcelDown.do", // File URL Goes Here
@@ -337,6 +339,9 @@ export default {
       params.append("stitle", this.stitle);
       params.append("ssdate", this.ssdate);
       params.append("sedate", this.sedate);
+      params.append("currentpage", 1);
+      params.append("pagesize", 9999999);
+
 
       this.axios({
         url: "/system/noticepdfDown.do", // File URL Goes Here
