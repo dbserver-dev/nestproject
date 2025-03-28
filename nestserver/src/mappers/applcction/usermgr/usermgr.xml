@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper namespace="usermgr">	
+   	
+	<select id="userListvue"  resultType = "map">
+  		select loginID
+             , user_type
+             , name
+             , password
+             , sex
+             , hp
+             , email
+             , zipcd
+             , addr
+             , dtladdr
+             , DATE_FORMAT(regdate, '%Y-%m-%d') as regdate
+             , loc
+             , birthday
+          from tb_userinfo
+          <where>
+			<if test ="sloginid != null">
+				and loginID like concat('%',#{sloginid},'%')
+			</if>	
+			<if test ="loginID != null">
+				and loginID = #{loginID} 
+			</if>
+			<if test ="sname != null">
+				and name like concat('%',#{sname},'%')
+			</if>				 
+			<if test ="selusertype != null">
+				and user_type = #{selusertype}
+			</if>		 
+		  </where>
+		 <if test ="loginID == null"> 
+		   order by regdate desc
+		   limit #{startpoint}, #{pagesize}	
+		 </if>	 
+	</select>
+
+    <select id="selectone"  resultType = "map">
+  		select loginID
+             , user_type
+             , name
+             , password
+             , sex
+             , hp
+             , email
+             , zipcd
+             , addr
+             , dtladdr
+             , DATE_FORMAT(regdate, '%Y-%m-%d') as regdate
+             , loc
+             , birthday
+          from tb_userinfo
+         where loginID = #{loginID} 
+	</select>
+	
+	
+	<select id="userListvuetotalcnt"  resultType="int">
+		select count(*)
+          from tb_userinfo
+          <where>
+			<if test ="sloginid != null">
+				and loginID like concat('%',#{sloginid},'%')
+			</if>	
+			<if test ="sname != null">
+				and name like concat('%',#{sname},'%')
+			</if>				 
+			<if test ="selusertype != null">
+				and user_type = #{selusertype}
+			</if> 
+		  </where>
+	</select>	
+		
+	<select id="usercheckLoginID"   resultType="int">
+		select count(*) as cnt
+          from tb_userinfo
+         where loginID = #{loginID}
+	</select>	
+	
+	
+	<insert id="userinsert">
+		insert into tb_userinfo
+		      (
+		         loginID
+		        , user_type
+		        , name
+		        , password
+		        , sex
+		        , hp
+		        , email
+		        , zipcd
+		        , addr
+		        , dtladdr
+		        , regdate
+		        , loc
+		        , birthday
+		      ) values (
+		          #{loginID}
+		        , #{user_type}
+		        , #{name}
+		        , #{password}
+		        , #{sex}
+		        , #{hp}
+		        , #{email}
+		        , #{zipcd}
+		        , #{addr}
+		        , #{dtladdr}
+		        , now()
+		        , #{loc}
+		        , #{birthday}
+		      )		
+	</insert> 
+	
+	<update id="userupdate">
+		update tb_userinfo
+		    set user_type = #{user_type}
+		      , name = #{name}
+		      , password = #{password}
+		      , sex = #{sex}
+		      , hp = #{hp}
+		      , email = #{email}
+		      , zipcd = #{zipcd}
+		      , addr = #{addr}
+		      , dtladdr = #{dtladdr}
+		      , loc = #{loc}
+		      , birthday = #{birthday}
+	      where loginID = #{loginID}
+	</update> 
+	
+	<delete id="userdelete" >
+         delete from tb_userinfo
+          where loginID = #{loginID}
+    </delete>
+	  
+</mapper>
