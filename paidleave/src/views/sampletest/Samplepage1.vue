@@ -72,6 +72,12 @@
                   <a class="btn btn-primary mx-2" name="btnNew" @click="pdf">
                     <span>pdf</span>
                   </a>
+                  <a class="btn btn-primary mx-2" name="btnNew" @click="doc">
+                    <span>doc</span>
+                  </a>
+                  <!-- a class="btn btn-primary mx-2" name="btnNew" @click="ppt">
+                    <span>ppt</span>
+                  </a -->
                 </span>
               </div>
             </td>
@@ -355,6 +361,58 @@ export default {
         let docUrl = document.createElement("a");
         docUrl.href = FILE;
         docUrl.setAttribute("download", "Noticepdf.pdf");
+        document.body.appendChild(docUrl);
+        docUrl.click();
+        //console.log('FILE : ' + FILE);
+      });
+    },
+    ppt: function () {
+      let params = new URLSearchParams();
+      params.append("stitle", this.stitle);
+      params.append("ssdate", this.ssdate);
+      params.append("sedate", this.sedate);
+      params.append("currentpage", 1);
+      params.append("pagesize", 9999999);
+
+
+      this.axios({
+        url: "/system/noticepptDown.do", // File URL Goes Here
+        data: params,
+        method: "POST",
+        responseType: "blob",
+      }).then((res) => {
+        console.log(res);
+        console.log(res.data);
+        let FILE = window.URL.createObjectURL(new Blob([res.data]));
+        let docUrl = document.createElement("a");
+        docUrl.href = FILE;
+        docUrl.setAttribute("download", "Noticeppt.ppt");
+        document.body.appendChild(docUrl);
+        docUrl.click();
+        //console.log('FILE : ' + FILE);
+      });
+    },
+    doc: function () {
+      let params = new URLSearchParams();
+      params.append("stitle", this.stitle);
+      params.append("ssdate", this.ssdate);
+      params.append("sedate", this.sedate);
+      params.append("currentpage", 1);
+      params.append("pagesize", 9999999);
+
+
+      this.axios({
+        url: "/system/noticedocDown.do", // File URL Goes Here
+        data: params,
+        method: "POST",
+        responseType: "blob",
+      }).then((res) => {
+        console.log(res);
+        console.log(res.data);
+        let FILE = window.URL.createObjectURL(new Blob([res.data]));
+        let docUrl = document.createElement("a");
+        docUrl.href = FILE;
+        docUrl.setAttribute("download", "Noticedoc.docx");
         document.body.appendChild(docUrl);
         docUrl.click();
         //console.log('FILE : ' + FILE);

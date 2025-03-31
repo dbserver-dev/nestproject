@@ -350,6 +350,11 @@ const save = (atype) => {
     params.append("action", atype);
   }
 
+  for (const [key, value] of params.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+
   axios
         .post("/system/usersave.do", params)
         .then((response) => {
