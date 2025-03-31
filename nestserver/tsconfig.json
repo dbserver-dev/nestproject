@@ -1,23 +1,23 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "declaration": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "ES2023",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": "./",
-    "incremental": true,
-    "skipLibCheck": true,
-    "strictNullChecks": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false,
-    "resolveJsonModule": true // ✅ JSON, XML 같은 비코드 파일 지원 (필수)
+    "module": "commonjs", // 👈 Node.js 기본 모듈 시스템 (require/exports)
+    "target": "ES2023", // 컴파일된 JS의 대상 버전 (최신 JS 사용 가능)
+    "outDir": "./dist", // 컴파일된 JS 파일이 저장될 위치
+    "declaration": true, // .d.ts 타입 선언 파일 생성
+    "removeComments": true, // 주석 제거
+    "emitDecoratorMetadata": true, // NestJS 데코레이터 메타데이터 필요
+    "experimentalDecorators": true, // 데코레이터 허용 (NestJS 필수)
+    "allowSyntheticDefaultImports": true, // ESM default import 허용
+    "sourceMap": true, // 디버깅을 위한 .map 파일 생성
+    "baseUrl": "./", // 상대 경로 설정 기준
+    "incremental": true, // 변경된 파일만 빌드 (빠름)
+    "skipLibCheck": true, // node_modules 타입 검사 생략
+    "strictNullChecks": true, // null/undefined 엄격 검사
+    "forceConsistentCasingInFileNames": true, // 대소문자 파일명 강제
+    "noImplicitAny": false, // 암시적 any 허용 (❗비추천: true가 더 안전)
+    "strictBindCallApply": false, // bind/call/apply 엄격 검사 X
+    "noFallthroughCasesInSwitch": false, // switch fall-through 허용
+    "resolveJsonModule": true // JSON import 허용
   },
   "include": [
     "src/**/*.ts",
