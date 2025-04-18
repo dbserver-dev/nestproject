@@ -9,5 +9,5 @@ RUN npm run build
 # 2. Nginx로 서빙
 FROM nginx:latest
 COPY --from=builder /app/build /usr/share/nginx/html
-EXPOSE 3000
+EXPOSE 8088
 CMD ["nginx", "-g", "daemon off;"]
