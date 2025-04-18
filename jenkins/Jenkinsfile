@@ -23,22 +23,22 @@ pipeline {
         stage('Push Docker Images') {
             steps {
                 withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                    sh 'docker tag vue your-dockerhub-id/vue:latest'
-                    sh 'docker push your-dockerhub-id/vue:latest'
+                    sh 'docker tag vue hwangkihun/vue:latest'
+                    sh 'docker push hwangkihun/vue:latest'
 
-                    sh 'docker tag nest your-dockerhub-id/nest:latest'
-                    sh 'docker push your-dockerhub-id/nest:latest'
+                    sh 'docker tag nest hwangkihun/nest:latest'
+                    sh 'docker push hwangkihun/nest:latest'
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                sshagent(['my-server-ssh']) {
+                sshagent(['ubuntu-ssh']) {
                     sh '''
-                    ssh ubuntu@192.168.0.99 "
-                        docker pull your-dockerhub-id/vue:latest &&
-                        docker pull your-dockerhub-id/nest:latest &&
+                    ssh ubuntu@192.168.0.9 "
+                        docker pull hwangkihun/vue:latest &&
+                        docker pull hwangkihun/nest:latest &&
                         docker-compose down &&
                         docker-compose up -d
                     "
