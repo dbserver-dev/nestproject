@@ -1,5 +1,5 @@
 # 1. Node 환경에서 React 빌드
-FROM node:18 AS builder
+FROM node:20 AS builder
 WORKDIR /app
 COPY paidleave/package.json paidleave/package-lock.json ./
 RUN npm install
