@@ -5,9 +5,6 @@ COPY paidleave/package.json paidleave/package-lock.json ./
 RUN npm install
 COPY paidleave ./
 RUN npm run build
-
-# 2. Nginx로 서빙
-FROM nginx:latest
-COPY --from=builder /app/build /usr/share/nginx/html
 EXPOSE 8088
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "run", "serve"]
+
