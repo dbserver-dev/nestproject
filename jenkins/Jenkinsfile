@@ -10,24 +10,24 @@ pipeline {
 
         stage('Build Frontend') {
             steps {
-                sh 'docker build -t my-frontend -f docker/frontend.Dockerfile .'
+                sh 'docker build -t vue -f docker/frontend.Dockerfile .'
             }
         }
 
         stage('Build Backend') {
             steps {
-                sh 'docker build -t my-backend -f docker/backend.Dockerfile .'
+                sh 'docker build -t nest -f docker/backend.Dockerfile .'
             }
         }
 
         stage('Push Docker Images') {
             steps {
                 withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                    sh 'docker tag my-frontend my-dockerhub-account/my-frontend:latest'
-                    sh 'docker push my-dockerhub-account/my-frontend:latest'
+                    sh 'docker tag vue your-dockerhub-id/vue:latest'
+                    sh 'docker push your-dockerhub-id/vue:latest'
 
-                    sh 'docker tag my-backend my-dockerhub-account/my-backend:latest'
-                    sh 'docker push my-dockerhub-account/my-backend:latest'
+                    sh 'docker tag nest your-dockerhub-id/nest:latest'
+                    sh 'docker push your-dockerhub-id/nest:latest'
                 }
             }
         }
@@ -36,9 +36,12 @@ pipeline {
             steps {
                 sshagent(['my-server-ssh']) {
                     sh '''
-                    ssh user@server "docker pull my-dockerhub-account/my-frontend:latest"
-                    ssh user@server "docker pull my-dockerhub-account/my-backend:latest"
-                    ssh user@server "docker-compose down && docker-compose up -d"
+                    ssh ubuntu@192.168.0.99 "
+                        docker pull your-dockerhub-id/vue:latest &&
+                        docker pull your-dockerhub-id/nest:latest &&
+                        docker-compose down &&
+                        docker-compose up -d
+                    "
                     '''
                 }
             }
