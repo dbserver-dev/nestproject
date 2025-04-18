@@ -8,6 +8,7 @@ module.exports = defineConfig({
         client: {
             overlay: false,
         },
+        host: '0.0.0.0',
         port: 8088,
         // Proxy 설정
         proxy: {
