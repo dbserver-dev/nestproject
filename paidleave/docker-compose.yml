@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+    ports:
+      - "8088:8088"
+    working_dir: /app/paidleave
+    volumes:
+      - ./paidleave:/app/paidleave
+    command: npm run serve
