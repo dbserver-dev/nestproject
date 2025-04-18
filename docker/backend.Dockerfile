@@ -1,5 +1,5 @@
 # 1. Node 환경에서 NestJS 빌드
-FROM node:18
+FROM node:20
 WORKDIR /app
 
 # 2. 패키지 설치
